@@ -1,0 +1,6 @@
+github.com/blockinsight/model.proto v0.0.0-20191109072739-b1e908da809c h1:YHs0T+FHVrLda6BCoHM0WsNm6RjhMu6myoFBBkS0zxo=
+github.com/blockinsight/model.proto v0.0.0-20191109072739-b1e908da809c/go.mod h1:poGFz64xjH0yRNP/s72DT6elW7ZKwjbTI7H063WaPYY=
+github.com/blockinsight/model.proto v0.0.0-20191109074016-21be32860072 h1:vZ/YpaZXYm5D+EnPxOizK6HYdrBUbZadh777Jgpifz8=
+github.com/blockinsight/model.proto v0.0.0-20191109074016-21be32860072/go.mod h1:poGFz64xjH0yRNP/s72DT6elW7ZKwjbTI7H063WaPYY=
+github.com/golang/protobuf v1.3.2 h1:6nsPYzhq5kReh6QImI3k5qWzO4PEbvbIW2cwSfR/6xs=
+github.com/golang/protobuf v1.3.2/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
