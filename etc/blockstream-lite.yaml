@@ -1,0 +1,18 @@
+slf4go:
+  default: 
+    backend: console
+    level: debug
+
+smf4go:
+  service:
+    grpcservice.default:
+      laddr: 127.0.0.1:8000
+    probe.client:
+      remote: 127.0.0.1:8000
+    cached.client:
+      remote: 127.0.0.1:8000
+    cached.leveldb.server:
+      root: "./build/cached"
+      chainId: 
+        "ETH":
+          [mainnet,ropsten]

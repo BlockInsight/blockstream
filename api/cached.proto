@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package cached;
+
+import "types.proto";
+
+message PutRequest {
+  types.Blockchain blockchain = 1;
+  string chainId = 2;
+  uint64 offset = 3;
+  bytes block = 4;
+}
+
+message PutResponse {}
+
+message GetRequest {
+  types.Blockchain blockchain = 1;
+  string chainId = 2;
+  uint64 offset = 3;
+}
+message GetResponse { bytes block = 1; }
+
+service Cached {
+  rpc Put(PutRequest) returns (PutResponse);
+  rpc Get(GetRequest) returns (GetResponse);
+}

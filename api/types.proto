@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package types;
+
+option go_package = "github.com/blockinsight/blockstream/types";
+
+enum Blockchain {
+  BTC = 0;
+  ETH = 1;
+  ONT = 2;
+  BNB = 3;
+  EOS = 4;
+  TRX = 5;
+}

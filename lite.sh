@@ -1,0 +1,1 @@
+go build  -o ./.build/blockstream-lite ./cmd/blockstream-lite && ./.build/blockstream-lite "$@" && rm ./.build/blockstream-lite

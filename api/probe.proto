@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package probe;
+
+import "types.proto";
+
+option go_package = "github.com/blockinsight/blockstream/probe";
+
+message JobRequest {
+  types.Blockchain blockchain = 1;
+  string chainId = 2;
+  string remoteUrl = 3; // blockchain node url
+  uint64 offset = 4;
+  int64 count = 5; // if count < 0, read infinite
+}
+
+message JobResponse { bytes block = 1; }
+
+service Probe { rpc CreateJob(JobRequest) returns (stream JobResponse); }
