@@ -7,12 +7,18 @@ smf4go:
   service:
     grpcservice.default:
       laddr: 127.0.0.1:8000
+    probe.server:
+      test: aaa
+      chainId: 
+        ETH: 
+          - mainnet
+          - ropsten
     probe.client:
       remote: 127.0.0.1:8000
     cached.client:
       remote: 127.0.0.1:8000
     cached.leveldb.server:
-      root: "./build/cached"
+      root: "./.build/cached"
       chainId: 
         "ETH":
           [mainnet,ropsten]

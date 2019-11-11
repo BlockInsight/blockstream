@@ -11,6 +11,7 @@ var errVendor = errors.WithVendor("blockstream-types")
 // Errors .
 var (
 	ErrBlockchain = errors.New("invalid blockchain name", errVendor, errors.WithCode(-1))
+	ErrChainIDs   = errors.New("unsupport chainID", errVendor, errors.WithCode(-2))
 )
 
 // MarshalJSON .

@@ -29,9 +29,9 @@ var (
 type cachedImpl struct {
 	slf4go.Logger
 	sync.RWMutex
-	rootpath      string
-	databases     map[string]*leveldb.DB
-	validChainIDs map[types.Blockchain][]string
+	rootpath         string
+	databases        map[string]*leveldb.DB
+	chainIDValidator types.ChainIDValidator
 }
 
 // New create leveldb cached for blockchain data
@@ -39,55 +39,23 @@ func New(config scf4go.Config) (grpcservice.Service, error) {
 
 	rootpath := config.Get("root").String("./cached")
 
-	var buff map[string][]string
+	chainIDValidator, err := types.GetChainIDValidator(config.SubConfig("chainId"))
 
-	if err := config.Get("chainId").Scan(&buff); err != nil {
-		return nil, errors.Wrap(err, "get leveldb cached support chainIDs error")
-	}
-
-	if len(buff) == 0 {
-		return nil, errors.Wrap(ErrChainIDs, "support chainIDs not config")
-	}
-
-	validChainIDs := make(map[types.Blockchain][]string)
-
-	for name, val := range buff {
-		blockchain, ok := types.Blockchain_value[name]
-
-		if !ok {
-			return nil, errors.Wrap(types.ErrBlockchain, "invalid blockchain %s", name)
-		}
-
-		validChainIDs[types.Blockchain(blockchain)] = val
+	if err != nil {
+		return nil, errors.Wrap(err, "get valid chainIds error")
 	}
 
 	return &cachedImpl{
-		Logger:        slf4go.Get("cached-leveldb"),
-		rootpath:      rootpath,
-		databases:     make(map[string]*leveldb.DB),
-		validChainIDs: validChainIDs,
+		Logger:           slf4go.Get("cached-leveldb"),
+		rootpath:         rootpath,
+		databases:        make(map[string]*leveldb.DB),
+		chainIDValidator: chainIDValidator,
 	}, nil
 }
 
 func (impl *cachedImpl) GrpcHandler(server *grpc.Server) error {
 	cached.RegisterCachedServer(server, impl)
 	return nil
-}
-
-func (impl *cachedImpl) checkChainID(blockchain types.Blockchain, chainID string) bool {
-	list, ok := impl.validChainIDs[blockchain]
-
-	if !ok {
-		return false
-	}
-
-	for _, valid := range list {
-		if valid == chainID {
-			return true
-		}
-	}
-
-	return false
 }
 
 func (impl *cachedImpl) createCache(blockchain types.Blockchain, chainID string) (*leveldb.DB, error) {
@@ -120,7 +88,7 @@ func (impl *cachedImpl) createCache(blockchain types.Blockchain, chainID string)
 func (impl *cachedImpl) getOrCreateCache(blockchain types.Blockchain, chainID string) (*leveldb.DB, error) {
 	impl.RLock()
 
-	if !impl.checkChainID(blockchain, chainID) {
+	if !impl.chainIDValidator.CheckChainID(blockchain, chainID) {
 		impl.RUnlock()
 		return nil, errors.Wrap(ErrChainID, "unsupport blockchain %s id %s", blockchain, chainID)
 	}

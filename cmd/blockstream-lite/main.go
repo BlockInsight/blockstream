@@ -2,10 +2,14 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"time"
+
+	"github.com/golang/protobuf/proto"
 
 	"github.com/blockinsight/blockstream/cached"
 	"github.com/blockinsight/blockstream/types"
+	"github.com/blockinsight/model.proto/golang/eth"
 
 	leveldbcached "github.com/blockinsight/blockstream/cached/leveldb"
 	"github.com/blockinsight/blockstream/probe"
@@ -23,7 +27,9 @@ func testJob(client probe.ProbeClient) {
 	time.Sleep(time.Second * 4)
 
 	job, err := client.CreateJob(context.Background(), &probe.JobRequest{
-		Blockchain: types.Blockchain_BTC,
+		Blockchain: types.Blockchain_ETH,
+		RemoteUrl:  "https://mainnet.infura.io/v3/44ab06a5fca644df953378ac1c16d2b9",
+		ChainId:    "mainnet",
 		Offset:     1,
 		Count:      -1,
 	})
@@ -39,8 +45,21 @@ func testJob(client probe.ProbeClient) {
 			panic(err)
 		}
 
-		println(string(resp.Block))
+		var block eth.Blockchain
+
+		err = proto.Unmarshal(resp.Block, &block)
+
+		if err != nil {
+			panic(err)
+		}
+
+		printObjec(block)
 	}
+}
+
+func printObjec(val interface{}) {
+	buff, _ := json.MarshalIndent(val, "\t", "\t")
+	println(string(buff))
 }
 
 func main() {
