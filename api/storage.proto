@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package storage;
+
+import "types.proto";
+
+message PutRequest { types.TaskOutput row = 1; }
+message PutResponse {}
+
+message PullRequest {
+  string id = 1;     // task id
+  uint64 offset = 2; // task pull offset
+  uint64 count = 3;  // task output offset
+}
+
+message PullResponse {
+  string id = 1;               // task id
+  uint64 offset = 2;           // task pull offset
+  types.TaskOutput output = 3; // task output
+}
+
+service Storage {
+  rpc Pull(PullRequest) returns (stream PullResponse);
+  rpc Put(stream PutRequest) returns (PutResponse);
+}

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package jobs;
+
+import "types.proto";
+
+message CreateJobRequest { types.Job job = 1; }
+message CreateJobResponse { string id = 1; }
+
+message CancelJobRequest { string id = 1; }
+message CancelJobResponse {}
+
+message WorkerRequest {
+  oneof command {
+    WorkerStartedCommand workerStarted = 1;
+    TaskCompletedCommand taskCompleted = 2;
+  }
+}
+
+message WorkerResponse {
+  oneof command { CreateTaskCommand createTask = 1; }
+}
+
+message CreateTaskCommand {
+  string prevTask = 2;
+  string prevTaskWorker = 3;
+  types.Task task = 1;
+}
+
+message TaskCompletedCommand { string id = 1; }
+
+message WorkerStartedCommand {
+  string id = 1;               // work id
+  string maxTasks = 2;         // worker support concurrent execute task number
+  string runningTasks = 3;     // worker already started and not completed tasks
+  repeated string outputs = 4; // worker pending task output queues
+}
+
+service Dispatcher {
+  rpc CreateJob(CreateJobRequest) returns (CreateJobResponse);
+  rpc CancelJob(CancelJobRequest) returns (CancelJobResponse);
+  rpc PunchIn(stream WorkerRequest) returns (stream WorkerResponse);
+}

@@ -2,6 +2,7 @@ package probe
 
 import (
 	context "context"
+	"time"
 
 	"github.com/golang/protobuf/proto"
 
@@ -40,6 +41,10 @@ func (job *jobImpl) fetchAndCacheBlock(client rpc4go.Client, offset uint64) ([]b
 			return nil, errors.Wrap(err, "fetch blockchain from %s error", job.RemoteUrl)
 		}
 
+		if block == nil {
+			return nil, nil
+		}
+
 		buff, err := proto.Marshal(block)
 
 		if err != nil {
@@ -74,6 +79,8 @@ func (job *jobImpl) run(server Probe_CreateJobServer) error {
 		return err
 	}
 
+	sleepDuration := time.Second * time.Duration(job.Backoff)
+
 	for i := job.Offset; ; i++ {
 
 		block, err := job.getCached(i)
@@ -87,6 +94,12 @@ func (job *jobImpl) run(server Probe_CreateJobServer) error {
 
 			if err != nil {
 				return err
+			}
+
+			if block == nil {
+				job.I("get block {@blockchain} chainId {@chainId} offset {@offset} -- not found, sleep {@sleep} ", job.Blockchain, job.ChainId, i, sleepDuration)
+				time.Sleep(sleepDuration)
+				continue
 			}
 		}
 

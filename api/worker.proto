@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package worker;
+
+import "types.proto";
+
+message PullRequest {
+  string id = 1;     // task id
+  uint64 offset = 2; // task pull offset
+  uint64 count = 3;  // task output offset
+}
+
+message PullResponse {
+  string id = 1;               // task id
+  uint64 offset = 2;           // task pull offset
+  types.TaskOutput output = 3; // task output
+}
+
+message PullCommitRequest {
+  string id = 1;     // task id
+  uint64 offset = 2; // task pull offset
+}
+
+message PullCommitResponse {}
+
+service Worker {
+  rpc PullOutput(PullRequest) returns (stream PullResponse);
+  rpc PullOutputCommit(PullCommitRequest) returns (PullCommitResponse);
+}

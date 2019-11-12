@@ -12,3 +12,62 @@ enum Blockchain {
   EOS = 4;
   TRX = 5;
 }
+
+enum Script { LUA = 0; }
+
+message Job {
+  string id = 1;
+  string name = 2;
+  string connectSession = 3; // created connect session
+  Script script = 4;         // script type
+  bytes data = 5;            // job script, current version support lua script
+}
+
+message ExecutePlan {
+  string id = 1;           // id
+  string name = 2;         // execute plan name
+  string job = 3;          // job id
+  repeated Task tasks = 4; // task list
+}
+
+// job execute plan's subtasks
+message Task {
+  string id = 1;     // task id
+  string plan = 2;   // execute plan id
+  string job = 3;    // job id
+  Script script = 4; // script type
+  bytes data = 5;    // job script, current version support lua script
+}
+
+message TaskInput {
+  string task = 1;
+  uint64 id = 2;  // output sequence id
+  bytes data = 3; // input data
+}
+
+message TaskOutput {
+  string task = 1;
+  uint64 id = 2;  // output sequence id
+  bytes data = 3; // input data
+}
+
+message JobReport {
+  string id = 1;
+  string name = 2;
+  string connectSession = 3; // created connect session
+  Script script = 4;         // script type
+  bytes data = 5;            // job script, current version support lua script
+  string startTime = 6;
+  string stopTime = 7;
+  repeated TaskReport taskReports = 8;
+}
+
+message TaskReport {
+  string id = 1; // task id
+  string startTime = 2;
+  string stopTime = 3;
+  uint64 inputs = 4;
+  uint64 inputBytes = 5;
+  uint64 outputs = 6;
+  uint64 outputBytes = 7;
+}

@@ -30,8 +30,9 @@ func testJob(client probe.ProbeClient) {
 		Blockchain: types.Blockchain_ETH,
 		RemoteUrl:  "https://mainnet.infura.io/v3/44ab06a5fca644df953378ac1c16d2b9",
 		ChainId:    "mainnet",
-		Offset:     1,
+		Offset:     8915326,
 		Count:      -1,
+		Backoff:    20,
 	})
 
 	if err != nil {
