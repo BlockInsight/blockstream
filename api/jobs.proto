@@ -22,9 +22,9 @@ message WorkerResponse {
 }
 
 message CreateTaskCommand {
-  string prevTask = 2;
-  string prevTaskWorker = 3;
   types.Task task = 1;
+  repeated string prevTask = 2;
+  repeated string prevTaskWorker = 3;
 }
 
 message TaskCompletedCommand { string id = 1; }
