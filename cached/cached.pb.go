@@ -4,11 +4,9 @@
 package cached
 
 import (
-	context "context"
 	fmt "fmt"
 	types "github.com/blockinsight/blockstream/types"
 	proto "github.com/golang/protobuf/proto"
-	grpc "google.golang.org/grpc"
 	math "math"
 )
 
@@ -237,109 +235,4 @@ var fileDescriptor_bdccd6ae8e8af8f5 = []byte{
 	0x4b, 0x8c, 0xab, 0xdb, 0x7f, 0xb5, 0xf9, 0x3d, 0x03, 0xcd, 0x86, 0x2a, 0x7f, 0xf9, 0x5e, 0xf1,
 	0x57, 0xf3, 0xf7, 0x3c, 0x6d, 0xe8, 0xe9, 0x27, 0x00, 0x00, 0xff, 0xff, 0x61, 0xeb, 0xb4, 0x71,
 	0xc6, 0x01, 0x00, 0x00,
-}
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
-
-// CachedClient is the client API for Cached service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type CachedClient interface {
-	Put(ctx context.Context, in *PutRequest, opts ...grpc.CallOption) (*PutResponse, error)
-	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
-}
-
-type cachedClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewCachedClient(cc *grpc.ClientConn) CachedClient {
-	return &cachedClient{cc}
-}
-
-func (c *cachedClient) Put(ctx context.Context, in *PutRequest, opts ...grpc.CallOption) (*PutResponse, error) {
-	out := new(PutResponse)
-	err := c.cc.Invoke(ctx, "/cached.Cached/Put", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *cachedClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
-	out := new(GetResponse)
-	err := c.cc.Invoke(ctx, "/cached.Cached/Get", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// CachedServer is the server API for Cached service.
-type CachedServer interface {
-	Put(context.Context, *PutRequest) (*PutResponse, error)
-	Get(context.Context, *GetRequest) (*GetResponse, error)
-}
-
-func RegisterCachedServer(s *grpc.Server, srv CachedServer) {
-	s.RegisterService(&_Cached_serviceDesc, srv)
-}
-
-func _Cached_Put_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CachedServer).Put(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/cached.Cached/Put",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CachedServer).Put(ctx, req.(*PutRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Cached_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CachedServer).Get(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/cached.Cached/Get",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CachedServer).Get(ctx, req.(*GetRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _Cached_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "cached.Cached",
-	HandlerType: (*CachedServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Put",
-			Handler:    _Cached_Put_Handler,
-		},
-		{
-			MethodName: "Get",
-			Handler:    _Cached_Get_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "cached.proto",
 }
